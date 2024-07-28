@@ -1,6 +1,5 @@
 {
-  # TODO: change this to your desired description
-  description = "❄️ 🦀 A template for embedded rust development for the nRF52840 with embassy featuring reproducible builds with nix";
+  description = "❄️ 🦀 Firmware for the Siren Song Custom Keyboard";
   inputs = {
     advisory-db = {
       url = "github:rustsec/advisory-db";
@@ -53,12 +52,12 @@
       };
       inherit (pkgs) lib;
 
-      # TODO: change this to your desired project name
-      projectName = "nrf-template";
+      projectName = "siren-song-fw";
 
       # We use rust-overlay to get a compatible nightly toolchain for our host system
       # that can compile for the correct target (nRF52840 is a thumbv7em ARM architecture).
       rustToolchain = pkgs.pkgsBuildHost.rust-bin.nightly.latest.default.override {
+        extensions = ["rust-src"];
         targets = ["thumbv7em-none-eabihf"];
       };
 
@@ -103,19 +102,19 @@
 
       # Build *just* the cargo dependencies, so we can reuse
       # all of that work (e.g. via cachix) when running in CI
-      cargoArtifacts = craneLib.buildDepsOnly (commonArgs
-        // {
-          extraDummyScript = ''
-            cp -a ${./memory.x} $out/memory.x
-          '';
-        });
+      # cargoArtifacts = craneLib.buildDepsOnly (commonArgs
+      #   // {
+      #     extraDummyScript = ''
+      #       cp -a ${./memory.x} $out/memory.x
+      #     '';
+      #   });
 
       # XXX: This is the workaround:
       # BUG: crane currently fails to compile the dummy project when using a linker script.
-      # So we create fake artifaces (an empty target folder) here to replace buildDepsOnly completely.
-      #cargoArtifacts = pkgs.runCommand "fake-artifacts" {} ''
-      #  mkdir -p $out/target
-      #'';
+      # So we create fake artifacts (an empty target folder) here to replace buildDepsOnly completely.
+      cargoArtifacts = pkgs.runCommand "fake-artifacts" {} ''
+        mkdir -p $out/target
+      '';
 
       # Build the actual package
       package = craneLib.buildPackage (commonArgs
@@ -215,7 +214,8 @@
           commonArgs.buildInputs
           ++ [
             (mkBinOnlyWrapper rustToolchain)
-            pkgs.probe-run
+            pkgs.probe-rs
+            pkgs.gdb
             pkgs.rust-analyzer
           ];
       };

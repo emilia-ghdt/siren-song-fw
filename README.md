@@ -25,3 +25,10 @@ $ nix develop
 $ cargo build
 $ cargo run
 ```
+
+## Basic Loop
+
+- Scan Matrix
+- Figure out keys pressed and associated actions
+- Execute actions changing the state of the keyboard
+- Send key press

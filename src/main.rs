@@ -75,7 +75,7 @@ const KEY_MAP: [[[u8; 2]; NUM_COL_PINS]; NUM_ROW_PINS] = [
     [
         [b'a' - b'a' + 0x04, b'r' - b'a' + 0x04],
         [b's' - b'a' + 0x04, b't' - b'a' + 0x04],
-        [b'g' - b'a' + 0x04, b'2' - b'1' + 0x1e],
+        [b'g' - b'a' + 0x04, 0x2c],
     ],
     [
         [b'z' - b'a' + 0x04, b'x' - b'a' + 0x04],
